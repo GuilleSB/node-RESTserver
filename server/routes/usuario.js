@@ -3,13 +3,15 @@ const bcrypt = require('bcrypt'); //Encriptar contraseñas
 const _ = require('underscore'); // Funciones extra javascript - validar actualizaciones (PUT)
 const Usuario = require('../models/usuario'); // Importa esquema usuarios
 const app = express();
+const {verificaToken,verificaAdmin_Role}= require('../middlewares/autenticacion');
 
-app.get('/usuario', function (req, res) {
+
+app.get('/usuario', verificaToken,(req, res) => {
 
   let desde = Number(req.query.desde) || 0;
   let limite = Number(req.query.limite) || 5;
 
-  Usuario.find({estado:true}, 'nombre email role google')
+  Usuario.find({ estado: true }, 'nombre email role google estado')
     .skip(desde)
     .limit(limite)
     .exec((err, usuariosDB) => {
@@ -37,7 +39,7 @@ app.get('/usuario', function (req, res) {
 
 });
 
-app.post('/usuario', function (req, res) {
+app.post('/usuario', [verificaToken,verificaAdmin_Role],function (req, res) {
   let body = req.body; //Parametros post
 
   let usuario = new Usuario({
@@ -62,7 +64,7 @@ app.post('/usuario', function (req, res) {
 
 });
 
-app.put('/usuario/:id', function (req, res) {
+app.put('/usuario/:id',[verificaToken,verificaAdmin_Role], function (req, res) {
 
   let id = req.params.id;
   let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']); // Solo los atributos del arreglo seran validos para actualizar
@@ -86,18 +88,18 @@ app.put('/usuario/:id', function (req, res) {
 
 
 
-app.delete('/usuario/:id', (req, res) => { // Delete no recibe parametros
+app.delete('/usuario/:id',[verificaToken,verificaAdmin_Role], (req, res) => { // Delete no recibe parametros
   let id = req.params.id;
 
   let cambiarEstado = { //Indica lo que se desea cambiar 
-    estado:false
+    estado: false
   }
 
-  Usuario.findByIdAndUpdate(id, cambiarEstado, {new:true} ,(err, usuarioBorrado) => {
+  Usuario.findByIdAndUpdate(id, cambiarEstado, { new: true }, (err, usuarioBorrado) => {
     if (err || !usuarioBorrado) {
       return res.status(400).json({
         ok: false,
-        err: err || { message:'No existe el usuario'}
+        err: err || { message: 'No existe el usuario' }
       });
     }
 
