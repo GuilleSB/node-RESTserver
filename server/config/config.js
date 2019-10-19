@@ -41,3 +41,17 @@ if (process.env.NODE_ENV === 'dev') {
 }
 
 process.env.URLDB = urlDB;
+
+
+/**
+ * CLIENT_ID
+ */
+process.env.CLIENT_ID = process.env.CLIENT_ID || '207115188742-vck78jqhp5779h0ee7kaldt0v3i56mg5.apps.googleusercontent.com';
+
+
+
+
+/**
+ * Password google
+ */
+process.env.passGoogle = process.env.passGoogle || ':)';

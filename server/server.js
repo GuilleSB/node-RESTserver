@@ -2,13 +2,17 @@ require('./config/config');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const path = require('path');
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 //Todo pasa por aca
 app.use(bodyParser.json());
-
 app.use(require('./routes/index')); //El routes/index posee todas las rutas de la aplicacion
+
+
+app.use(express.static(path.resolve(__dirname,'./public/')));
+
 
 
 /**CONEXION MONGOBD */

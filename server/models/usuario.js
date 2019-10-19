@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const uniqueValidator = require('mongoose-unique-validator');
 
 
 /**
@@ -16,7 +16,7 @@ mongoose.set('useUnifiedTopology', true);
 
 
 
-const uniqueValidator = require('mongoose-unique-validator');
+
 
 let Schema = mongoose.Schema;
 /**
